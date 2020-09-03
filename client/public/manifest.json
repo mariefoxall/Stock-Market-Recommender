@@ -1,0 +1,9 @@
+{
+  "short_name": "Social Index",
+  "name": "Social Index - Stock Market Recommender",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

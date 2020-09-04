@@ -14,7 +14,7 @@ const Graph = ({ stockPriceArray }) => {
   return (
     <AreaChart
       width={450}
-      height={450}
+      height={380}
       data={data}
       margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
     >

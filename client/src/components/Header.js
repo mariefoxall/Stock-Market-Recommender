@@ -32,6 +32,7 @@ const HeaderWrapper = styled.div`
     var(--lavender),
     var(--mint-green)
   );
+  z-index: 2;
 `;
 const PageLinks = styled.div``;
 

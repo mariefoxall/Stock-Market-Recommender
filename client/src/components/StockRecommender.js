@@ -287,6 +287,11 @@ const ResultsSection = styled.div`
   margin: 10px 0;
   box-shadow: 2px 2px 5px 2px var(--mint-green);
   display: flex;
+  justify-content: center;
+  @media (max-width: 980px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const ResultsTable = styled.table`

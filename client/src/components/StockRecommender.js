@@ -17,10 +17,13 @@ const StockRecommender = ({ symbolsList, name }) => {
   const endDate = new Date();
   const startDate = subDays(endDate, 9);
 
+  //randomly generated social media mentions - would fetch from API here
   const socialMediaCountGenerator = (stockSymbol, activeSocial) => {
-    return Math.round(Math.random() * 5000);
+    return Math.round(Math.random() * 2000);
   };
 
+  //randomly generated price data for date range - would fetch from API here
+  //included social media mentions in same array for ease of reference
   const stockPriceGenerator = (stockSymbol, startDate, endDate) => {
     for (let i = 0; i <= differenceInCalendarDays(endDate, startDate); i++) {
       stockPriceArray.push({
@@ -33,6 +36,7 @@ const StockRecommender = ({ symbolsList, name }) => {
 
   let stockPriceArrayInOrder = [];
 
+  //ensure that mappable array is chronological
   if (stockPriceArray.length > 0) {
     stockPriceArrayInOrder = stockPriceArray.sort(function compare(a, b) {
       const timeA = new Date(a.date);
@@ -41,6 +45,7 @@ const StockRecommender = ({ symbolsList, name }) => {
     });
   }
 
+  //reset values to empty array when input changes
   React.useEffect(() => {
     setStockPriceArray([]);
     setShowResults(false);
@@ -51,16 +56,19 @@ const StockRecommender = ({ symbolsList, name }) => {
     setShowResults(false);
   }, [activeSocial]);
 
-  const showRecommendation = async () => {
+  //on submit - check if symbol is valid (in list from data.js for given stock exchange)
+  //call recommendation algorithm
+  const showRecommendation = () => {
     if (!symbolsList.includes(stockSymbol.toUpperCase())) {
       setValidSymbol(false);
     } else {
       setValidSymbol(true);
-      await stockPriceGenerator(stockSymbol, startDate, endDate);
+      stockPriceGenerator(stockSymbol, startDate, endDate);
       recommendationAlgorithm(stockPriceArray);
     }
   };
 
+  //rudimentary recommendation algorithm based on behaviour of random data
   const recommendationAlgorithm = (stockPriceArray) => {
     setShowResults(true);
     const stockStartPrice = stockPriceArray.find(
@@ -171,38 +179,41 @@ const StockRecommender = ({ symbolsList, name }) => {
           </InputDiv>
         </InputSection>
         {showResults && (
-          <ResultsSection>
-            <TableRecoDiv>
-              <ResultsTable>
-                <ResultsTableBody>
-                  <ResultsTR>
-                    <ResultsTH>Date</ResultsTH>
-                    <ResultsTH>
-                      {activeSocial.charAt(0).toUpperCase() +
-                        activeSocial.slice(1)}{" "}
-                      Mentions
-                    </ResultsTH>
-                    <ResultsTH>Stock Price</ResultsTH>
-                  </ResultsTR>
-                  {stockPriceArrayInOrder.map((entry, index) => {
-                    return (
-                      <ResultsTR key={index}>
-                        <ResultsTD>{entry.date}</ResultsTD>
-                        <ResultsTD>{entry.socialMediaCount}</ResultsTD>
-                        <ResultsTD>$ {entry.price}</ResultsTD>
-                      </ResultsTR>
-                    );
-                  })}
-                </ResultsTableBody>
-              </ResultsTable>
-              <RecommendationResult>
-                {recommendation.length > 0 && (
-                  <div>Recommendation: {recommendation}!</div>
-                )}
-              </RecommendationResult>
-            </TableRecoDiv>
-            <Graph stockPriceArray={stockPriceArrayInOrder} />
-          </ResultsSection>
+          <>
+            <RecommendationResult>
+              {recommendation.length > 0 && (
+                <div>Recommendation: {recommendation}!</div>
+              )}
+            </RecommendationResult>
+
+            <ResultsSection>
+              <TableRecoDiv>
+                <ResultsTable>
+                  <ResultsTableBody>
+                    <ResultsTR>
+                      <ResultsTH>Date</ResultsTH>
+                      <ResultsTH>
+                        {activeSocial.charAt(0).toUpperCase() +
+                          activeSocial.slice(1)}{" "}
+                        Mentions
+                      </ResultsTH>
+                      <ResultsTH>Stock Price</ResultsTH>
+                    </ResultsTR>
+                    {stockPriceArrayInOrder.map((entry, index) => {
+                      return (
+                        <ResultsTR key={index}>
+                          <ResultsTD>{entry.date}</ResultsTD>
+                          <ResultsTD>{entry.socialMediaCount}</ResultsTD>
+                          <ResultsTD>$ {entry.price}</ResultsTD>
+                        </ResultsTR>
+                      );
+                    })}
+                  </ResultsTableBody>
+                </ResultsTable>
+              </TableRecoDiv>
+              <Graph stockPriceArray={stockPriceArrayInOrder} />
+            </ResultsSection>
+          </>
         )}
       </PageDiv>
     </>
@@ -272,10 +283,10 @@ const RecoButton = styled.button`
 `;
 
 const RecommendationResult = styled.h3`
-  margin-top: 20px;
+  margin: 20px;
   padding: 10px;
-  background-color: var(--forest-green);
-  color: white;
+  background-color: var(--lavender);
+  color: var(--forest-green);
   border-radius: 5px;
   text-align: center;
 `;
